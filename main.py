@@ -14,7 +14,7 @@ class VideoConverterApp(QWidget):
         super().__init__()
         self.ffmpeg_path = self.get_ffmpeg_path()  # Get the bundled FFmpeg path
         self.initUI()
-
+    #Path to ffmpeg, change it as needed
     def get_ffmpeg_path(self):
         """Find the path to the FFmpeg executable in the bundled application."""
         if getattr(sys, 'frozen', False):
@@ -23,7 +23,7 @@ class VideoConverterApp(QWidget):
             ffmpeg_path = os.path.join(base_path, 'fffmpeg-7.0.2-full_build','bin' ,'ffmpeg.exe')
         else:
             # Running in a normal Python environment
-            ffmpeg_path = os.path.abspath('fffmpeg-7.0.2-full_build/bin/ffmpeg.exe')
+            ffmpeg_path = os.path.abspath('/usr/bin/ffmpeg')
 
         return ffmpeg_path
 
