@@ -20,7 +20,7 @@ class VideoConverterApp(QWidget):
         if getattr(sys, 'frozen', False):
             # If we're inside the PyInstaller executable
             base_path = sys._MEIPASS  # Temporary path where PyInstaller bundles data
-            ffmpeg_path = os.path.join(base_path, 'fffmpeg-7.0.2-full_build','bin' ,'ffmpeg.exe')
+            ffmpeg_path = os.path.join(base_path, 'ffmpeg-7.0.2-full_build','bin' ,'ffmpeg.exe')
         else:
             # Running in a normal Python environment
             ffmpeg_path = os.path.abspath('/usr/bin/ffmpeg')
