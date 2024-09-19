@@ -14,13 +14,14 @@ class VideoConverterApp(QWidget):
         super().__init__()
         self.ffmpeg_path = self.get_ffmpeg_path()  # Get the bundled FFmpeg path
         self.initUI()
-    #Path to ffmpeg, change it as needed
+
+    # Path to ffmpeg, change it as needed
     def get_ffmpeg_path(self):
         """Find the path to the FFmpeg executable in the bundled application."""
         if getattr(sys, 'frozen', False):
             # If we're inside the PyInstaller executable
             base_path = sys._MEIPASS  # Temporary path where PyInstaller bundles data
-            ffmpeg_path = os.path.join(base_path, 'ffmpeg-7.0.2-full_build','bin' ,'ffmpeg.exe')
+            ffmpeg_path = os.path.join(base_path, 'ffmpeg-7.0.2-full_build', 'bin', 'ffmpeg.exe')
         else:
             # Running in a normal Python environment
             ffmpeg_path = os.path.abspath('/usr/bin/ffmpeg')
@@ -76,23 +77,38 @@ class VideoConverterApp(QWidget):
             return
 
         frame_rate = self.frameRateSpinBox.value()
-        
+
         with tempfile.TemporaryDirectory() as temp_dir:
             video_files = [f for f in os.listdir(self.inputFolder) if f.endswith(('.webp', '.mp4', '.avi', '.mov', '.mkv'))]
             if not video_files:
                 QMessageBox.warning(self, "Warning", "No supported video files found in the input folder.")
                 return
-            
+
             for video_file in video_files:
                 video_path = os.path.join(self.inputFolder, video_file)
-                output_video_path = os.path.join(self.outputFolder, os.path.splitext(video_file)[0] + '.mp4')
+
+                # Extract file name and extension
+                file_name, file_ext = os.path.splitext(video_file)
+                # Remove non-alphanumeric characters from file name for the subfolder
+                sanitized_file_name = ''.join(c for c in file_name if c.isalnum())
+                # Create subfolder name by combining the sanitized file name and file extension
+                subfolder_name = f"{sanitized_file_name}{file_ext.replace('.', '')}"
                 
+                # Create the subfolder path inside the output folder
+                output_subfolder_path = os.path.join(self.outputFolder, subfolder_name)
+                
+                # Create the subfolder
+                os.makedirs(output_subfolder_path, exist_ok=True)
+
+                # Create the output file path inside the subfolder
+                output_video_path = os.path.join(output_subfolder_path, f"{sanitized_file_name}{file_ext.replace('.', '')}.mp4")
+
                 if video_file.endswith('.webp'):
                     self.webp_to_frames(video_path, temp_dir)
                     self.frames_to_video(temp_dir, output_video_path, frame_rate)
                 else:
                     self.convert_with_ffmpeg(video_path, output_video_path)
-        
+
         QMessageBox.information(self, "Success", "Processing completed.")
 
     def webp_to_frames(self, webp_path, output_folder):
