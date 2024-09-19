@@ -1,5 +1,6 @@
 ### NOTE: REMEMBER TO CHANGE FFMPEG PATH TO WHERE YOU INSTALL IT IN YOUR SYSTEM
 ### Video Processor
+### Complie: pyinstaller -D --add-data "path\to\ffmpeg;ffmpeg-7.0.2-full_build" main.py
 
 ### Class:
 #### 1. `VideoConverterApp(QWidget)`
